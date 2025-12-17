@@ -1,4 +1,5 @@
 import { Button, LineEdit, ScrollView, ListView, VerticalBox, HorizontalBox } from "std-widgets.slint";
+import { ListItem } from "../themes/material-1.0/material.slint";
 
 export struct ChatMessage {
     text: string,
@@ -67,7 +68,7 @@ export component MainWindow inherits Window {
             LineEdit {
                 text <=> root.input_text;
                 placeholder-text: "Type your message…";
-                width: 80%;
+                width: 70%;
 
                 accepted => {
                     if (!root.input_text.is-empty) {
@@ -79,7 +80,7 @@ export component MainWindow inherits Window {
 
             Button {
                 text: "Send";
-                width: 100px;
+                min-width: 50px;
 
                 clicked => {
                     if (!root.input_text.is-empty) {
