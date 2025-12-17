@@ -3,18 +3,19 @@
 
 use std::error::Error;
 
+use slint::{ModelRc, VecModel};
+
 slint::include_modules!();
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let ui = AppWindow::new()?;
+    env_logger::init();
 
-    ui.on_request_increase_value({
-        let ui_handle = ui.as_weak();
-        move || {
-            let ui = ui_handle.unwrap();
-            ui.set_counter(ui.get_counter() + 1);
-        }
-    });
+    let ui = MainWindow::new()?;
+
+    ui.set_messages(ModelRc::new(VecModel::from_iter([ChatMessage {
+        is_user: false,
+        text: "Hello! How can I help you?".into(),
+    }])));
 
     ui.run()?;
 

@@ -1,17 +1,92 @@
-import { Button, VerticalBox } from "std-widgets.slint";
+import { Button, LineEdit, ScrollView, ListView, VerticalBox, HorizontalBox } from "std-widgets.slint";
 
-export component AppWindow inherits Window {
-    in-out property <int> counter: 42;
-    callback request-increase-value();
-    VerticalBox {
-        Text {
-            text: "Counter: \{root.counter}";
+export struct ChatMessage {
+    text: string,
+    is_user: bool,
+}
+
+// Delegate component for rendering each message
+component ChatRow {
+    in property <string> text;
+    in property <bool> is_user;
+
+    HorizontalBox {
+        spacing: 8px;
+        alignment: start;
+    
+        // Spacer pushes bubble left or right
+        if is_user: Rectangle { width: -1cm; }
+
+        Rectangle {
+            border-radius: 8px;
+            background: is_user ? #2a6ef0 : #444;
+
+            Text {
+                text: root.text;
+                color: is_user ? #fff : #eee;
+                wrap: word-wrap;
+                max-width: 300px;
+                min-height: 20px;
+                min-width: 200px;
+            }
         }
 
-        Button {
-            text: "Increase value";
-            clicked => {
-                root.request-increase-value();
+        if !is_user: Rectangle { width: 1cm; }
+    }
+}
+
+export component MainWindow inherits Window {
+    width: 500px;
+    height: 700px;
+    title: "LLM Chat Client";
+
+    in-out property  <[ChatMessage]> messages;
+    out property <string> input_text: "";
+    callback send_clicked(string);
+
+    VerticalBox {
+        spacing: 8px;
+        padding: 8px;
+
+        ScrollView {
+            height: 85%;
+
+            ListView {
+                // Use ChatRow as delegate
+                for msg in root.messages: ChatRow {
+                    text: msg.text;
+                    is_user: msg.is_user;
+                }
+            }
+        }
+
+        HorizontalBox {
+            spacing: 8px;
+            height: 10%;
+
+            LineEdit {
+                text <=> root.input_text;
+                placeholder-text: "Type your message…";
+                width: 80%;
+
+                accepted => {
+                    if (!root.input_text.is-empty) {
+                        root.input_text = "";
+                        root.send_clicked(root.input_text);
+                    }
+                }
+            }
+
+            Button {
+                text: "Send";
+                width: 100px;
+
+                clicked => {
+                    if (!root.input_text.is-empty) {
+                        root.input_text = "";
+                        root.send_clicked(root.input_text);
+                    }
+                }
             }
         }
     }
