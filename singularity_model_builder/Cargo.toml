@@ -1,0 +1,12 @@
+[package]
+name = "singularity_model_builder"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies] 
+anyhow.workspace = true
+mistralrs = { git = "https://github.com/EricLBuehler/mistral.rs.git", rev = "95fc722", features = [] }
+hf-hub = { version = "0.4", default-features = false, features = [ "tokio", "rustls-tls" ] }
+
+[lints]
+workspace = true

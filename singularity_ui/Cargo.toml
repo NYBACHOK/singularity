@@ -9,6 +9,7 @@ description = "POC for LLM Client"
 # Enable `gettext` feature if you need localization. Read about localizing slint apps here: https://docs.slint.dev/latest/docs/slint/guide/development/translations/
 slint = { version = "1.14", features = ["log"] }
 env_logger = "0.11"
+singularity_model_builder = { path = "../singularity_model_builder"}
 
 [build-dependencies]
 slint-build = "1.14"
