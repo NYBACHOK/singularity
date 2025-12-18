@@ -72,8 +72,8 @@ export component MainWindow inherits Window {
 
                 accepted => {
                     if (!root.input_text.is-empty) {
-                        root.input_text = "";
                         root.send_clicked(root.input_text);
+                        root.input_text = "";
                     }
                 }
             }
@@ -84,8 +84,8 @@ export component MainWindow inherits Window {
 
                 clicked => {
                     if (!root.input_text.is-empty) {
-                        root.input_text = "";
                         root.send_clicked(root.input_text);
+                        root.input_text = "";
                     }
                 }
             }
