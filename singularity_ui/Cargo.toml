@@ -5,14 +5,46 @@ edition = "2024"
 license = "MIT"
 description = "POC for LLM Client"
 
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "singularity_ui_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
 [dependencies]
 # Enable `gettext` feature if you need localization. Read about localizing slint apps here: https://docs.slint.dev/latest/docs/slint/guide/development/translations/
-slint = { version = "1.14", features = [ "log", "backend-winit" ] }
+slint = { version = "1.14", features = [ "log", "backend-winit", "backend-android-activity-06" ] }
 env_logger = "0.11"
 # dirs.workspace = true
 # anyhow.workspace = true
 # tokio = {workspace = true, features = [ "macros", "rt-multi-thread" ] }
 # async-compat = "0.2"
 
+[target.'cfg(target_os = "android")'.dependencies]
+
+[target.'cfg(target_os = "ios")'.dependencies]
+
 [build-dependencies]
 slint-build = "1.14"
+
+# Android section of App
+
+[package.metadata.android]
+package = "com.ghuba.singularity.app"
+build_targets = [ "aarch64-linux-android", "x86_64-linux-android" ]
+apk_name = "Singularity"
+
+[package.metadata.android.sdk]
+min_sdk_version = 32
+target_sdk_version = 36
+max_sdk_version = 36
+
+[package.metadata.android.application.activity]
+launch_mode = "singleTop"
+orientation = "portrait"
+resizeable_activity = false
+
+[package.metadata.android.signing.debug]
+path = "$HOME/.android/debug.keystore"
+keystore_password = "android"
