@@ -21,3 +21,17 @@
 *.sln
 *.sw?
 .vscode
+
+# ios 
+xcuserdata/
+Externals/
+/Packages
+/*.xcodeproj
+xcuserdata/
+DerivedData/
+.swiftpm/config/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.netrc
+Package.resolved
+NodeMobile.xcframework
+.swiftpm

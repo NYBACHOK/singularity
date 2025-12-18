@@ -1,0 +1,21 @@
+name: Singularity
+options:
+  bundleIdPrefix: com.ghuba.singularity.application
+settings:
+  ENABLE_USER_SCRIPT_SANDBOXING: NO
+targets:
+  Singularity:
+    type: application
+    platform: iOS
+    deploymentTarget: "12.0"
+    info:
+        path: Info.plist
+        properties:
+            UILaunchScreen:
+                - ImageRespectSafeAreaInsets: true
+    sources: []
+    postCompileScripts:
+      - script: |
+          ./build_for_ios_with_cargo.bash singularity_ui
+        outputFileLists:
+            $TARGET_BUILD_DIR/$EXECUTABLE_PATH
