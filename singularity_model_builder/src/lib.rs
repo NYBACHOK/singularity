@@ -5,7 +5,7 @@ mod download;
 
 pub mod errors;
 
-pub use mistralrs::Model;
+pub use mistralrs::*;
 
 #[derive(Debug)]
 pub struct Builder {
