@@ -14,37 +14,36 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 
 [dependencies]
 # Enable `gettext` feature if you need localization. Read about localizing slint apps here: https://docs.slint.dev/latest/docs/slint/guide/development/translations/
-slint = { version = "1.14", features = [ "log", "backend-winit", "backend-android-activity-06" ] }
-env_logger = "0.11"
-# dirs.workspace = true
-# anyhow.workspace = true
-# tokio = {workspace = true, features = [ "macros", "rt-multi-thread" ] }
-# async-compat = "0.2"
+slint = { version = "1.14", features = [
+    "log",
+    "backend-winit"
+] }
 
-[target.'cfg(target_os = "android")'.dependencies]
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
-[target.'cfg(target_os = "ios")'.dependencies]
+# Async
+tokio = { workspace = true, features = ["rt-multi-thread", "process"] }
+async-compat = "0.2"
+futures-util = "0.3"
+
+# Other
+anyhow.workspace = true
+thiserror.workspace = true
+dirs.workspace = true
+ollama-rs = "0.3.3"
+reqwest = { version = "0.12", default-features = false, features = [
+    "rustls-tls",
+    "stream",
+] }
+
+[target.'cfg(any(target_os = "linux", all(target_os = "macos", target_arch = "x86_64")))'.dependencies]
+tar = "0.4"
+flate2 = "1.1"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+zip = "7.0"
 
 [build-dependencies]
 slint-build = "1.14"
-
-# Android section of App
-
-[package.metadata.android]
-package = "com.ghuba.singularity.app"
-build_targets = [ "aarch64-linux-android", "x86_64-linux-android" ]
-apk_name = "Singularity"
-
-[package.metadata.android.sdk]
-min_sdk_version = 32
-target_sdk_version = 36
-max_sdk_version = 36
-
-[package.metadata.android.application.activity]
-launch_mode = "singleTop"
-orientation = "portrait"
-resizeable_activity = false
-
-[package.metadata.android.signing.debug]
-path = "$HOME/.android/debug.keystore"
-keystore_password = "android"

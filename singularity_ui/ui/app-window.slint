@@ -1,5 +1,4 @@
 import { Button, LineEdit, ScrollView, ListView, VerticalBox, HorizontalBox } from "std-widgets.slint";
-import { ListItem } from "../themes/material-1.0/material.slint";
 
 export struct ChatMessage {
     text: string,
@@ -21,9 +20,11 @@ component ChatRow {
         Rectangle {
             border-radius: 8px;
             background: is_user ? #2a6ef0 : #444;
-
+            
             Text {
                 text: root.text;
+                overflow: elide;
+                horizontal-alignment: center;
                 color: is_user ? #fff : #eee;
                 wrap: word-wrap;
                 max-width: 300px;
@@ -39,6 +40,10 @@ component ChatRow {
 export component App inherits Window {
     width: 500px;
     height: 700px;
+
+    default-font-family: "monospace";
+    default-font-size: 16px;
+
     title: "LLM Chat Client";
 
     in-out property  <[ChatMessage]> messages;

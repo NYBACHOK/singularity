@@ -1,8 +1,13 @@
+mod commands;
+mod core;
+mod error;
 use std::rc::Rc;
 
 use slint::{ModelRc, VecModel};
 
 slint::include_modules!();
+
+const APP_ID: &str = env!("APP_ID");
 
 pub fn setup_app() -> Result<App, Box<dyn std::error::Error>> {
     let ui = App::new()?;
@@ -29,20 +34,9 @@ pub fn setup_app() -> Result<App, Box<dyn std::error::Error>> {
 }
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
-    env_logger::init();
-
     let app = setup_app()?;
 
     app.run()?;
 
     Ok(())
-}
-
-#[cfg(target_os = "android")]
-#[unsafe(no_mangle)]
-fn android_main(app: slint::android::AndroidApp) {
-    slint::android::init(app).expect("failed to init application");
-    if let Err(e) = main() {
-        eprintln!("Failed to start app. Reason: {e}")
-    }
 }
