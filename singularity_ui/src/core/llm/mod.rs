@@ -16,7 +16,7 @@ pub mod install;
 pub mod serve;
 pub mod utils;
 
-pub const OLLAMA_DATA_DIR: &str = "ollama";
+const OLLAMA_DATA_DIR: &str = "ollama";
 const MODEL_NAME: &str = "gemma3:1b";
 
 static IS_OLLAMA_LOADED: AtomicBool = AtomicBool::new(false);
@@ -26,7 +26,7 @@ static OLLAMA_BACKEND: Mutex<Option<tokio::process::Child>> = Mutex::new(Option:
 static OLLAMA_CLIENT: LazyLock<ollama_rs::Ollama> = LazyLock::new(|| ollama_rs::Ollama::default());
 
 /// Returns string with ollama installed version. None means that ollama probably not installed or missing in $PATH env
-pub async fn ollama_version(binary_dir: Option<PathBuf>) -> Option<String> {
+async fn ollama_version(binary_dir: Option<PathBuf>) -> Option<String> {
     let ollama_bin = match binary_dir {
         Some(dir) => serve::ollama_binary_location(&dir),
         None => "ollama".into(),
@@ -63,8 +63,10 @@ pub async fn ollama_version(binary_dir: Option<PathBuf>) -> Option<String> {
     Some(version)
 }
 
-async fn get_or_create_app_dir() -> Result<PathBuf, BetterIoError> {
-    let path = dirs::data_dir().expect("invalid os").join(APP_ID);
+async fn get_or_create_app_dir(root: Option<PathBuf>) -> Result<PathBuf, BetterIoError> {
+    let path = root
+        .unwrap_or(dirs::data_dir().expect("invalid os"))
+        .join(APP_ID);
 
     if !tokio::fs::try_exists(&path)
         .await
@@ -79,7 +81,7 @@ async fn get_or_create_app_dir() -> Result<PathBuf, BetterIoError> {
 }
 
 pub async fn version() -> anyhow::Result<Option<String>> {
-    let ollama_dir = get_or_create_app_dir().await?.join(OLLAMA_DATA_DIR);
+    let ollama_dir = get_or_create_app_dir(None).await?.join(OLLAMA_DATA_DIR);
 
     let version = ollama_version(Some(ollama_dir)).await;
 
@@ -87,10 +89,8 @@ pub async fn version() -> anyhow::Result<Option<String>> {
 }
 
 pub async fn llm_download() -> anyhow::Result<()> {
-    let cache_dir = dirs::cache_dir().expect("invalid os").join(APP_ID);
-    let target_dir = dirs::data_dir()
-        .expect("invalid os")
-        .join(format!("{APP_ID}/{OLLAMA_DATA_DIR}"));
+    let cache_dir = get_or_create_app_dir(Some(dirs::cache_dir().expect("invalid os"))).await?;
+    let target_dir = get_or_create_app_dir(None).await?.join(OLLAMA_DATA_DIR);
 
     let _ollama_location = ollama_download(cache_dir, target_dir).await?;
 
@@ -114,7 +114,7 @@ pub async fn llm_download_model() -> anyhow::Result<String> {
 }
 
 pub async fn llm_load() -> anyhow::Result<()> {
-    let ollama_dir = get_or_create_app_dir().await?.join(OLLAMA_DATA_DIR);
+    let ollama_dir = get_or_create_app_dir(None).await?.join(OLLAMA_DATA_DIR);
 
     let mut ollama_backend_lock = OLLAMA_BACKEND.lock().expect("POISONED LOCK");
 

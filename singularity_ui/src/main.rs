@@ -16,7 +16,9 @@ fn setup_logger() {
         .with(
             tracing_subscriber::EnvFilter::from_default_env()
                 .add_directive("winit=warn".parse().unwrap())
-                .add_directive("sctk=warn".parse().unwrap()),
+                .add_directive("sctk=warn".parse().unwrap())
+                .add_directive("hyper_util=warn".parse().unwrap())
+                .add_directive("reqwest=warn".parse().unwrap()),
         )
         .init();
 }

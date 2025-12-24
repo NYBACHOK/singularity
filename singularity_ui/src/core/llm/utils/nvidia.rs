@@ -4,7 +4,7 @@ pub async fn is_nvidia() -> bool {
     match tokio::process::Command::new("nvidia-smi").spawn() {
         Ok(child) => child,
         Err(e) => {
-            tracing::warn!("Failed to check gpu. Reason: {e}");
+            tracing::warn!("Failed to find Nvidia drivers. Reason: {e}. Assuming AMD GPU");
 
             return false;
         }

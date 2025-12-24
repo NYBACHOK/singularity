@@ -1,4 +1,12 @@
-import { Button, LineEdit, ScrollView, ListView, VerticalBox, HorizontalBox } from "std-widgets.slint";
+import {
+    Button,
+    LineEdit,
+    ScrollView,
+    ListView,
+    VerticalBox,
+    HorizontalBox,
+} from "std-widgets.slint";
+import { BasicInfo } from "other/confirm-download.slint";
 
 export struct ChatMessage {
     text: string,
@@ -15,12 +23,13 @@ component ChatRow {
         alignment: start;
     
         // Spacer pushes bubble left or right
-        if is_user: Rectangle { width: -1cm; }
+        if is_user: Rectangle {
+            width: 10%;
+        }
 
         Rectangle {
             border-radius: 8px;
             background: is_user ? #2a6ef0 : #444;
-            
             Text {
                 text: root.text;
                 overflow: elide;
@@ -33,7 +42,9 @@ component ChatRow {
             }
         }
 
-        if !is_user: Rectangle { width: 1cm; }
+        if !is_user: Rectangle {
+            width: 10%;
+        }
     }
 }
 
@@ -46,16 +57,31 @@ export component App inherits Window {
 
     title: "LLM Chat Client";
 
-    in-out property  <[ChatMessage]> messages;
-    out property <string> input_text: "";
-    callback send_clicked(string);
+    in-out property <bool> show_download_warning;
+    in-out property <bool> download_finished;
+    in-out property <[ChatMessage]> messages;
 
-    VerticalBox {
+    out property <string> input_text: "";
+    
+    callback send_clicked(string);
+    callback download_accepted();
+
+    dialog := BasicInfo {
+        visible: !show_download_warning;
+        text: "Application needs to download additional files.";
+        on_accept => {
+            root.download_accepted();
+            show_download_warning = true;
+        }
+    }
+
+    if show_download_warning: VerticalBox {
         spacing: 8px;
         padding: 8px;
 
         ScrollView {
             height: 85%;
+            width: 90%;
 
             ListView {
                 // Use ChatRow as delegate

@@ -1,0 +1,18 @@
+import { StandardButton } from "std-widgets.slint";
+
+export component BasicInfo inherits Dialog {
+    in-out property <string> text;
+
+    callback on_accept();
+
+    Text {
+        text <=> root.text;
+    }
+
+    StandardButton {
+        kind: ok;
+        clicked => {
+            root.on_accept()
+        };
+    }
+}
