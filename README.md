@@ -8,6 +8,10 @@ Rust framework for llm inference which looks promising and works, but has weird 
 
 Better wait for `wgpu` support in `candle` and improvements in `mistral.rs` and this will be great cross-platform solution.
 
+## Ollama
+
+I used ollama as backend for LLM. This app download it and use it to generate responses. I haven't implemented context tracking or proper configuration, but this is my first learning project to `slint`.
+
 ## Developers
 
 Developers should install [rustup][rustup] and configure their editor to use [rust-analyzer][rust-analyzer].
