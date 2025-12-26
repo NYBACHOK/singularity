@@ -18,7 +18,7 @@ pub use macos::*;
 #[cfg(target_os = "windows")]
 pub use windows::*;
 
-pub fn ollama_serve(ollama_dir: impl AsRef<Path>) -> Result<Child, BetterIoError> {
+pub(super) fn ollama_serve(ollama_dir: impl AsRef<Path>) -> Result<Child, BetterIoError> {
     let bin = ollama_binary_location(ollama_dir.as_ref());
 
     tracing::info!("starting ollama binary in - {}", bin.display());

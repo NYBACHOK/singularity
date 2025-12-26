@@ -114,16 +114,16 @@ pub async fn llm_download_model() -> anyhow::Result<String> {
 }
 
 pub async fn llm_load() -> anyhow::Result<()> {
-    let ollama_dir = get_or_create_app_dir(None).await?.join(OLLAMA_DATA_DIR);
-
     let mut ollama_backend_lock = OLLAMA_BACKEND.lock().expect("POISONED LOCK");
 
     if ollama_backend_lock.is_none() {
+        let ollama_dir = get_or_create_app_dir(None).await?.join(OLLAMA_DATA_DIR);
+
         let child = ollama_serve(ollama_dir)?;
 
         *ollama_backend_lock = Some(child)
     } else {
-        tracing::warn!("Tried to init new ollama instance while old is still running")
+        return Ok(());
     }
 
     IS_OLLAMA_LOADED.store(true, std::sync::atomic::Ordering::SeqCst);
@@ -131,6 +131,7 @@ pub async fn llm_load() -> anyhow::Result<()> {
     Ok(())
 }
 
+#[allow(dead_code)]
 pub async fn llm_unload() -> anyhow::Result<()> {
     let mut ollama_backend_lock = OLLAMA_BACKEND.lock().expect("POISONED LOCK");
 

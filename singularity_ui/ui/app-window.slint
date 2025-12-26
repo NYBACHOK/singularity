@@ -58,11 +58,11 @@ export component App inherits Window {
     title: "LLM Chat Client";
 
     in-out property <bool> show_download_warning;
+    in-out property <bool> finished_loading: true;
     in-out property <bool> download_finished;
     in-out property <[ChatMessage]> messages;
 
     out property <string> input_text: "";
-    
     callback send_clicked(string);
     callback download_accepted();
 
@@ -75,7 +75,11 @@ export component App inherits Window {
         }
     }
 
-    if show_download_warning: VerticalBox {
+    if !finished_loading && show_download_warning : Text {
+        text: "Loading required resources";
+    }
+
+    if show_download_warning && finished_loading: VerticalBox {
         spacing: 8px;
         padding: 8px;
 
